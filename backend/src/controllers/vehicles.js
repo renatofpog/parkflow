@@ -32,12 +32,12 @@ export const registerVehicles = async (request, response) => {
 
     db = await openDatabase();
 
-    const existingVehicle = await db.get(
+    const checkLabelVehicle = await db.get(
       `SELECT id_vehicle FROM vehicles WHERE label_vehicle = ?`,
       [label_vehicle],
     );
 
-    if (existingVehicle) {
+    if (checkLabelVehicle) {
       return response.status(409).json({
         message: "Já existe um veículo cadastrado com esta placa.",
       });
