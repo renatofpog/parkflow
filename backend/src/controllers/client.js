@@ -1,4 +1,5 @@
 import { openDatabase } from "../database.js";
+import { deleteVehicle } from "./vehicles.js";
 
 export const listClients = async (request, response) => {
   let db;
@@ -67,5 +68,68 @@ export const registerClient = async (request, response) => {
     return response.status(500).json({
       message: "Não foi possível cadastrar o seu cliente!",
     });
+  }
+};
+
+export const deleteClient = async (request, response) => {
+  let db;
+  try {
+    db = await openDatabase();
+
+    const { id } = request.params;
+
+    const results = await db.run(`DELETE FROM clients WHERE id_client = ?`, [
+      id
+    ]);
+    const deleteVehicleOwner = await db.run(`DELETE FROM vehicles WHERE owner_vehicle = ?`, [id])
+
+    if (results.changes === 0 && deleteVehicleOwner.changes === 0) {
+      return response.status(404).json({ message: "Cliente não encontrado." });
+    }
+
+    return response.json({
+      message: "Registro de cliente deletado com sucesso!",
+    });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ message: "Erro ao deletar registro." });
+  } finally {
+    if (db) await db.close();
+  }
+};
+
+export const updateClient = async (request, response) => {
+  let db;
+  try {
+    db = await openDatabase();
+    const { id } = request.params;
+    const { new_name, new_email } = request.body;
+
+    const client = await db.get(
+      `SELECT * FROM client WHERE id_client = ?`,
+      [id],
+    );
+
+    if (!client) {
+      return response.status(404).json({ message: "Cliente não encontrado!" });
+    }
+
+    await db.run(
+      `UPDATE clients 
+       SET name_client = ?, email_client = ? 
+       WHERE id_client = ?`,
+      [
+        new_name ?? client.name_client,
+        new_email ?? client.email_client,
+        id,
+      ],
+    );
+
+    return response.json({ message: "Registro de cliente atualizado com sucesso!" });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ message: "Erro ao atualizar cliente." });
+  } finally {
+    if (db) await db.close();
   }
 };

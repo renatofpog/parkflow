@@ -5,7 +5,7 @@ import {
   deleteVehicle,
   updateVehicle,
 } from "./src/controllers/vehicles.js";
-import { listClients, registerClient } from "./src/controllers/client.js";
+import { deleteClient, listClients, registerClient, updateClient } from "./src/controllers/client.js";
 
 const app = express();
 
@@ -35,7 +35,8 @@ app.put("/vehicles/:id", updateVehicle);
 /* ROTAS CLIENTES */
 app.get("/clients", listClients);
 app.post("/clients", registerClient);
-
+app.delete("/clients/:id", deleteClient)
+app.put("/clients/:id", updateClient)
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
