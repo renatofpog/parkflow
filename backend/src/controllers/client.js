@@ -1,5 +1,4 @@
 import { openDatabase } from "../database.js";
-import { deleteVehicle } from "./vehicles.js";
 
 export const listClients = async (request, response) => {
   let db;
