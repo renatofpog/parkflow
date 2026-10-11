@@ -3,14 +3,12 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { openDatabase } from "../database.js";
 
-const JWT_SECRET = process.env.JWT_SECRET; 
-
 export const listUsers = async (request, response) => {
   try {
     const db = await openDatabase();
     const users = await db.all(`SELECT * FROM users`);
     await db.close();
-    response.status(200).json(users);
+    return response.status(200).json(users); // Adicionado return por boa prática
   } catch (error) {
     response.status(500).send({ message: "Erro ao listar usuários." });
   }
@@ -34,7 +32,7 @@ export const createUser = async (request, response) => {
     const data = await db.run(
       `
         INSERT INTO users (name_user, email_user, password_user, admin_level, premium_level)
-        VALUES (?, ?, ?, 0, 0)    
+        VALUES (?, ?, ?, 5, 5)    
         `,
       [name_user, email_user, hashedPassword],
     );
@@ -47,7 +45,7 @@ export const createUser = async (request, response) => {
   } catch (error) {
     if (db) await db.close();
     console.log(error);
-    response.status(500).send({
+    return response.status(500).send({
       message: "Não foi possível cadastrar no banco de dados. Tente novamente!",
     });
   }
@@ -88,7 +86,7 @@ export const updateUser = async (request, response) => {
   } catch (error) {
     if (db) await db.close();
     console.log(error);
-    response.status(500).json({ message: "Erro ao atualizar conta." });
+    return response.status(500).json({ message: "Erro ao atualizar conta." });
   }
 };
 
@@ -108,7 +106,7 @@ export const deleteUser = async (request, response) => {
     });
   } catch (error) {
     if (db) await db.close();
-    response.status(400).json("Não foi possível excluir sua conta.");
+    return response.status(400).json("Não foi possível excluir sua conta.");
   }
 };
 
@@ -138,6 +136,8 @@ export const loginUser = async (request, response) => {
         .status(401)
         .json({ message: "E-mail ou senha incorretos." });
     }
+
+    const JWT_SECRET = process.env.JWT_SECRET;
 
     const token = jwt.sign(
       { id: user.id_user, email_user: user.email_user }, JWT_SECRET,
