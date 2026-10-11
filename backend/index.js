@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
 
 import {
@@ -8,20 +8,27 @@ import {
   updateVehicle,
 } from "./src/controllers/vehicles.js";
 
-import { 
-  listClients, 
-  registerClient, 
-  deleteClient, 
-  updateClient 
+import {
+  listClients,
+  registerClient,
+  deleteClient,
+  updateClient,
 } from "./src/controllers/client.js";
 
-import { 
-  listUsers, 
-  createUser, 
-  deleteUser, 
-  updateUser, 
-  loginUser 
-} from './src/controllers/users.js';
+import {
+  listUsers,
+  createUser,
+  deleteUser,
+  updateUser,
+  loginUser,
+} from "./src/controllers/users.js";
+
+import {
+  listParks,
+  registerPark,
+  deletePark,
+  updatePark,
+} from "./src/controllers/park.js";
 
 import { authMiddleware } from "./src/middlewares/auth.js";
 
@@ -32,7 +39,10 @@ const PORT = process.env.PORT || 3000;
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-  res.header("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type, Authorization");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-PINGOTHER, Content-Type, Authorization",
+  );
   next();
 });
 
@@ -42,8 +52,7 @@ app.use(express.json());
 app.post("/login", loginUser);
 app.post("/users", createUser);
 
-
-app.use(authMiddleware); 
+app.use(authMiddleware);
 
 /* ROTAS VEÍCULOS */
 app.get("/vehicles", listVehicles);
@@ -56,6 +65,12 @@ app.get("/clients", listClients);
 app.post("/clients", registerClient);
 app.delete("/clients/:id", deleteClient);
 app.put("/clients/:id", updateClient);
+
+/* ROTAS ESTACIONAMENTO */
+app.get("/parks", listParks);
+app.post("/parks", registerPark);
+app.delete("/parks/:id", deletePark);
+app.put("/parks/:id", updatePark);
 
 /* ROTAS USUARIOS */
 app.get("/users", listUsers);
