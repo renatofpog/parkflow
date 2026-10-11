@@ -105,7 +105,7 @@ export const updateClient = async (request, response) => {
     const { new_name, new_email } = request.body;
 
     const client = await db.get(
-      `SELECT * FROM client WHERE id_client = ?`,
+      `SELECT * FROM clients WHERE id_client = ?`,
       [id],
     );
 

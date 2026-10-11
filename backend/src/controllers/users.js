@@ -8,7 +8,7 @@ export const listUsers = async (request, response) => {
     const db = await openDatabase();
     const users = await db.all(`SELECT * FROM users`);
     await db.close();
-    return response.status(200).json(users); // Adicionado return por boa prática
+    return response.status(200).json(users);
   } catch (error) {
     response.status(500).send({ message: "Erro ao listar usuários." });
   }

@@ -4,12 +4,15 @@ export const listParks = async (request, response) => {
   let db;
   try {
     db = await openDatabase();
-
     const results = await db.all(`SELECT * FROM parks`);
-
     return response.status(200).json(results);
   } catch (error) {
     console.error("Erro ao listar os estacionamentos criados!", error);
+    return response
+      .status(500)
+      .json({ message: "Erro ao listar estacionamentos." });
+  } finally {
+    if (db) await db.close();
   }
 };
 
@@ -100,11 +103,9 @@ export const updatePark = async (request, response) => {
       [new_name || park.park_name, id],
     );
 
-
     if (result.changes === 0) {
       return response.status(400).json({
-        message:
-          "Nenhuma alteração foi feita.",
+        message: "Nenhuma alteração foi feita.",
       });
     }
 
