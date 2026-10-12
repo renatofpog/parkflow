@@ -78,5 +78,5 @@ app.put("/users/:id", updateUser);
 app.delete("/users/:id", deleteUser);
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor funcionando.`);
 });
